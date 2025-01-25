@@ -2,7 +2,6 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
-
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
 
@@ -131,19 +130,19 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         children: [
                           Text(
                             currentSpeed.toStringAsFixed(1),
-                            style: const TextStyle(
+                            style: TextStyle(
                               fontSize: 48,
                               fontWeight: FontWeight.bold,
-                              color: Colors.black87,
+                              color: currentSpeed > 30 ? Colors.red : Colors.black87,
                             ),
                           ),
-                          const Padding(
-                            padding: EdgeInsets.only(bottom: 8.0),
+                          Padding(
+                            padding: const EdgeInsets.only(bottom: 8.0),
                             child: Text(
                               ' km/h',
                               style: TextStyle(
                                 fontSize: 20,
-                                color: Colors.black54,
+                                color: currentSpeed > 30 ? Colors.red : Colors.black54,
                               ),
                             ),
                           ),
@@ -153,8 +152,22 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       LinearProgressIndicator(
                         value: currentSpeed / 100, 
                         backgroundColor: Colors.blue.withOpacity(0.1),
-                        valueColor: const AlwaysStoppedAnimation<Color>(Colors.blue),
+                        valueColor: AlwaysStoppedAnimation<Color>(
+                          currentSpeed > 30 ? Colors.red : Colors.blue,
+                        ),
                       ),
+                      if (currentSpeed > 30) 
+                        const Padding(
+                          padding: EdgeInsets.only(top: 8.0),
+                          child: Text(
+                            'Over Speed',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.red,
+                            ),
+                          ),
+                        ),
                     ],
                   ),
                 ),
@@ -246,7 +259,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
     );
   }
 }
-
 
 class DashboardTile extends StatelessWidget {
   final Widget child;
