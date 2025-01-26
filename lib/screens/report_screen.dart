@@ -1,195 +1,3 @@
-// import 'package:flutter/material.dart';
-// import 'package:cloud_firestore/cloud_firestore.dart';
-// import 'package:geocoding/geocoding.dart';
-
-// class ReportScreen extends StatefulWidget {
-//   const ReportScreen({super.key});
-
-//   @override
-//   _ReportScreenState createState() => _ReportScreenState();
-// }
-
-// class _ReportScreenState extends State<ReportScreen> {
-//   List<RideReport> _rideReports = [];
-
-//   @override
-//   void initState() {
-//     super.initState();
-//     _fetchRideReports();
-//   }
-
-//   Future<String> _getLocationName(double latitude, double longitude) async {
-//     try {
-//       List<Placemark> placemarks = await placemarkFromCoordinates(latitude, longitude);
-//       if (placemarks.isNotEmpty) {
-//         // Return the first part of the location (usually city or town)
-//         return placemarks.first.locality ?? placemarks.first.subLocality ?? 'Unknown Location';
-//       }
-//     } catch (e) {
-//       print('Error getting location: $e');
-//     }
-//     return 'Unknown Location';
-//   }
-
-//   Future<void> _fetchRideReports() async {
-//     final firestore = FirebaseFirestore.instance;
-    
-//     // Fetch unique ride IDs
-//     QuerySnapshot sensorSnapshot = await firestore.collection('sensor_data').get();
-    
-//     // Set to store unique ride IDs
-//     Set<String> rideIds = sensorSnapshot.docs
-//         .map((doc) => doc['ride_id'] as String)
-//         .toSet();
-
-//     List<RideReport> reports = [];
-
-//     // Process each unique ride ID
-//     for (String rideId in rideIds) {
-//       // Fetch sensor data for this ride
-//       QuerySnapshot sensorData = await firestore
-//           .collection('sensor_data')
-//           .where('ride_id', isEqualTo: rideId)
-//           .get();
-
-//       // Fetch helmet data for this ride
-//       QuerySnapshot helmetData = await firestore
-//           .collection('helmet-data')
-//           .where('ride_id', isEqualTo: rideId)
-//           .get();
-
-//       // Fetch wrong side data for this ride
-//       QuerySnapshot wrongSideData = await firestore
-//           .collection('wrongside-data')
-//           .where('ride_id', isEqualTo: rideId)
-//           .get();
-
-//       // Sort sensor data by timestamp
-//       var sortedSensorData = sensorData.docs
-//         ..sort((a, b) => (a['timestamp'] as Timestamp).compareTo(b['timestamp'] as Timestamp));
-
-//       // Calculate average speed
-//       double avgSpeed = sensorData.docs
-//           .map((doc) => doc['speed'] as double)
-//           .reduce((a, b) => a + b) / sensorData.docs.length;
-
-//       // Get start and end locations
-//       var firstSensorDoc = sortedSensorData.first;
-//       var lastSensorDoc = sortedSensorData.last;
-
-//       String startLocationName = await _getLocationName(
-//         firstSensorDoc['latitude'] as double, 
-//         firstSensorDoc['longitude'] as double
-//       );
-
-//       String endLocationName = await _getLocationName(
-//         lastSensorDoc['latitude'] as double, 
-//         lastSensorDoc['longitude'] as double
-//       );
-
-//       // Determine helmet status
-//       bool hadHelmet = helmetData.docs.any((doc) => doc['status'] == 'with helmet');
-
-//       // Determine wrong side status
-//       String wrongSideStatus = wrongSideData.docs
-//           .map((doc) => doc['status'] as String)
-//           .firstWhere((status) => status != 'Equal Counts', 
-//               orElse: () => 'Equal Counts');
-
-//       // Create ride report
-//       RideReport report = RideReport(
-//         rideId: rideId,
-//         startLocation: startLocationName,
-//         endLocation: endLocationName,
-//         startTime: (firstSensorDoc['timestamp'] as Timestamp).toDate(),
-//         endTime: (lastSensorDoc['timestamp'] as Timestamp).toDate(),
-//         averageSpeed: avgSpeed,
-//         helmetStatus: hadHelmet ? 'Helmet Worn' : 'No Helmet',
-//         wrongSideStatus: wrongSideStatus,
-//       );
-
-//       reports.add(report);
-//     }
-
-//     // Update state
-//     setState(() {
-//       _rideReports = reports;
-//     });
-//   }
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(
-//         title: Text('Ride Reports'),
-//       ),
-//       body: _rideReports.isEmpty
-//           ? Center(child: CircularProgressIndicator())
-//           : ListView.builder(
-//               itemCount: _rideReports.length,
-//               itemBuilder: (context, index) {
-//                 RideReport report = _rideReports[index];
-//                 return Card(
-//                   margin: EdgeInsets.all(8),
-//                   child: ExpansionTile(
-//                     title: Text('Ride ${index + 1}'),
-//                     subtitle: Text('${report.startTime}'),
-//                     children: [
-//                       ListTile(
-//                         title: Text('Start Location: ${report.startLocation}'),
-//                         subtitle: Text('End Location: ${report.endLocation}'),
-//                       ),
-//                       ListTile(
-//                         title: Text('Average Speed: ${report.averageSpeed.toStringAsFixed(2)} km/h'),
-//                       ),
-//                       ListTile(
-//                         title: Text('Helmet Status: ${report.helmetStatus}'),
-//                         subtitle: Text('Wrong Side Status: ${report.wrongSideStatus}'),
-//                       ),
-//                       ListTile(
-//                         title: Text('Start Time: ${report.startTime}'),
-//                         subtitle: Text('End Time: ${report.endTime}'),
-//                       ),
-//                     ],
-//                   ),
-//                 );
-//               },
-//             ),
-//     );
-//   }
-// }
-
-// class RideReport {
-//   final String rideId;
-//   final String startLocation;
-//   final String endLocation;
-//   final DateTime startTime;
-//   final DateTime endTime;
-//   final double averageSpeed;
-//   final String helmetStatus;
-//   final String wrongSideStatus;
-
-//   RideReport({
-//     required this.rideId,
-//     required this.startLocation,
-//     required this.endLocation,
-//     required this.startTime,
-//     required this.endTime,
-//     required this.averageSpeed,
-//     required this.helmetStatus,
-//     required this.wrongSideStatus,
-//   });
-// }
-
-
-
-
-
-
-
-
-
-
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -419,11 +227,12 @@ class _RideReportItemState extends State<RideReportItem> {
     }
   }
 
-  String formatTimestamp(String timestamp) {
-    DateTime dateTime = DateTime.parse(timestamp);
-    DateTime istTime = dateTime.add(const Duration(hours: 5, minutes: 30));
-    return DateFormat('dd MMMM yyyy, hh:mm a').format(istTime);
-  }
+String formatTimestamp(String timestamp) {
+  DateTime dateTime = DateTime.parse(timestamp).toUtc();
+  DateTime localTime = dateTime.toLocal(); // Convert to local time
+  return DateFormat('dd MMMM yyyy, hh:mm a').format(localTime);
+}
+
 
   double calculateAverageSpeed() {
     double totalSpeed =
@@ -615,3 +424,5 @@ class _RideReportItemState extends State<RideReportItem> {
     );
   }
 }
+
+
