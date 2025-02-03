@@ -299,8 +299,15 @@ String formatTimestamp(String timestamp) {
     );
   }
 
-  Widget _buildMapTile(double tileWidth) {
-    List<LatLng> routePoints = widget.rideData.map((data) => LatLng(data['latitude'], data['longitude'])).toList();
+Widget _buildMapTile(double tileWidth) {
+    // Sort the ride data by timestamp
+    List<Map<String, dynamic>> sortedRideData = List.from(widget.rideData)
+      ..sort((a, b) => DateTime.parse(a['timestamp']).compareTo(DateTime.parse(b['timestamp'])));
+
+    // Create route points from sorted data
+    List<LatLng> routePoints = sortedRideData
+        .map((data) => LatLng(data['latitude'], data['longitude']))
+        .toList();
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -319,23 +326,26 @@ String formatTimestamp(String timestamp) {
                 urlTemplate: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
                 subdomains: ['a', 'b', 'c'],
               ),
+              // Add PolylineLayer to connect points
               PolylineLayer(
                 polylines: [
                   Polyline(
                     points: routePoints,
-                    strokeWidth: 4.0,
-                    color: Colors.blue,
+                    strokeWidth: 3,
+                    color: Colors.blue.withOpacity(0.7),
                   ),
                 ],
               ),
               MarkerLayer(
                 markers: [
+                  // Only start marker
                   Marker(
                     point: routePoints.first,
                     width: 60,
                     height: 60,
                     child: const Icon(Icons.location_on, color: Colors.green, size: 40),
                   ),
+                  // Only end marker
                   Marker(
                     point: routePoints.last,
                     width: 60,
@@ -350,6 +360,7 @@ String formatTimestamp(String timestamp) {
       ),
     );
   }
+
 
   Widget _buildAverageSpeedTile(double tileWidth) {
     double avgSpeed = calculateAverageSpeed();
