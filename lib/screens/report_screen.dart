@@ -101,7 +101,6 @@ class _RideReportsScreenState extends State<RideReportsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // appBar: AppBar(title: const Text('Ride Reports')),
       appBar: AppBar(
         title: const Text(
           'Ride Reports',
