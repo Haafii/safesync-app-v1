@@ -103,13 +103,14 @@ class _RideReportsScreenState extends State<RideReportsScreen> {
     return Scaffold(
       // appBar: AppBar(title: const Text('Ride Reports')),
       appBar: AppBar(
-  title: const Text(
-    'Ride Reports',
-    style: TextStyle(color: Colors.white), // Ensures text is white
-  ),
-  backgroundColor: Color.fromRGBO(162, 154, 209, 1), // Custom background color
-  foregroundColor: Colors.white, // Ensures icons are white
-),
+        title: const Text(
+          'Ride Reports',
+          style: TextStyle(color: Colors.white), // Ensures text is white
+        ),
+        backgroundColor:
+            Color.fromRGBO(162, 154, 209, 1), // Custom background color
+        foregroundColor: Colors.white, // Ensures icons are white
+      ),
 
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
