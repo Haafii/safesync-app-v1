@@ -89,47 +89,6 @@
 //   }
 // }
 
-
-
-//final
-// import 'package:flutter/material.dart';
-// import 'home_screen.dart'; // Import your existing HomeScreen
-
-// class SplashScreen extends StatefulWidget {
-//   const SplashScreen({super.key});
-
-//   @override
-//   _SplashScreenState createState() => _SplashScreenState();
-// }
-
-// class _SplashScreenState extends State<SplashScreen> {
-//   @override
-//   void initState() {
-//     super.initState();
-
-//     // Delay for 2 seconds and navigate to HomeScreen
-//     Future.delayed(const Duration(seconds: 2), () {
-//       Navigator.of(context).pushReplacement(
-//         MaterialPageRoute(builder: (_) => const HomeScreen()),
-//       );
-//     });
-//   }
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       body: Center(
-//         child: Image.asset(
-//           "assets/images/photo_2025-02-10_13-33-20.png", // Ensure the correct path
-//           width: 200, // Adjust size as needed
-//           height: 200,
-//         ),
-//       ),
-//     );
-//   }
-// }
-
-
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'login_screen.dart'; // Navigate to LoginScreen instead of HomeScreen
@@ -147,7 +106,8 @@ class _SplashScreenState extends State<SplashScreen> {
     super.initState();
     Future.delayed(const Duration(seconds: 2), () {
       Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (_) => LoginScreen()), // Go to LoginScreen first
+        MaterialPageRoute(
+            builder: (_) => LoginScreen()), // Go to LoginScreen first
       );
     });
   }
@@ -157,7 +117,7 @@ class _SplashScreenState extends State<SplashScreen> {
     return Scaffold(
       body: Center(
         child: Image.asset(
-          "assets/images/photo_2025-02-10_13-33-20.png", 
+          "assets/images/photo_2025-02-10_13-33-20.png",
           width: 200,
           height: 200,
         ),
