@@ -25,9 +25,8 @@ class _RideReportsScreenState extends State<RideReportsScreen> {
   Future<void> _fetchRideReports() async {
     try {
       // Get unique ride IDs from sensor_data
-      QuerySnapshot sensorDataSnapshot = await FirebaseFirestore.instance
-          .collection('sensor_data')
-          .get();
+      QuerySnapshot sensorDataSnapshot =
+          await FirebaseFirestore.instance.collection('sensor_data').get();
 
       // Group data by ride_id
       Map<String, List<QueryDocumentSnapshot>> rideGroups = {};
@@ -38,7 +37,7 @@ class _RideReportsScreenState extends State<RideReportsScreen> {
 
       // Fetch corresponding helmet and wrongside data for each ride
       List<Map<String, dynamic>> fetchedRides = [];
-      
+
       for (var rideId in rideGroups.keys) {
         // Fetch sensor data for this ride
         List<Map<String, dynamic>> rideData = rideGroups[rideId]!
@@ -55,7 +54,7 @@ class _RideReportsScreenState extends State<RideReportsScreen> {
             .collection('helmet-data')
             .where('ride_id', isEqualTo: rideId)
             .get();
-        
+
         List<Map<String, dynamic>> helmetData = helmetSnapshot.docs
             .map((doc) => {
                   'ride_id': doc['ride_id'],
@@ -69,7 +68,7 @@ class _RideReportsScreenState extends State<RideReportsScreen> {
             .collection('wrongside-data')
             .where('ride_id', isEqualTo: rideId)
             .get();
-        
+
         List<Map<String, dynamic>> wrongSideData = wrongsideSnapshot.docs
             .map((doc) => {
                   'ride_id': doc['ride_id'],
@@ -102,7 +101,16 @@ class _RideReportsScreenState extends State<RideReportsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Ride Reports')),
+      // appBar: AppBar(title: const Text('Ride Reports')),
+      appBar: AppBar(
+  title: const Text(
+    'Ride Reports',
+    style: TextStyle(color: Colors.white), // Ensures text is white
+  ),
+  backgroundColor: Color.fromRGBO(162, 154, 209, 1), // Custom background color
+  foregroundColor: Colors.white, // Ensures icons are white
+),
+
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
           : rides.isEmpty
@@ -161,14 +169,28 @@ class _RideReportItemState extends State<RideReportItem> {
   Future<void> _getEndLocationName() async {
     try {
       final lastPoint = widget.rideData.last;
+      // print(lastPoint);
       List<Placemark> placemarks = await placemarkFromCoordinates(
         lastPoint["latitude"],
         lastPoint["longitude"],
       );
+      // print(placemarks);
 
       if (placemarks.isNotEmpty) {
         setState(() {
-          endAddress = placemarks.first.locality ?? "Unknown Location";
+          // Try thoroughfare -> sublocality -> locality -> administrativeArea -> country -> fallback
+          endAddress = (placemarks.first.thoroughfare?.isNotEmpty == true)
+              ? placemarks.first.thoroughfare!
+              : (placemarks.first.subLocality?.isNotEmpty == true)
+                  ? placemarks.first.subLocality!
+                  : (placemarks.first.locality?.isNotEmpty == true)
+                      ? placemarks.first.locality!
+                      : (placemarks.first.administrativeArea?.isNotEmpty ==
+                              true)
+                          ? placemarks.first.administrativeArea!
+                          : (placemarks.first.country?.isNotEmpty == true)
+                              ? placemarks.first.country!
+                              : "Unknown Location";
         });
       }
     } catch (e) {
@@ -189,7 +211,19 @@ class _RideReportItemState extends State<RideReportItem> {
 
       if (placemarks.isNotEmpty) {
         setState(() {
-          startAddress = placemarks.first.locality ?? "Unknown Location";
+          // Try thoroughfare -> sublocality -> locality -> administrativeArea -> country -> fallback
+          startAddress = (placemarks.first.thoroughfare?.isNotEmpty == true)
+              ? placemarks.first.thoroughfare!
+              : (placemarks.first.subLocality?.isNotEmpty == true)
+                  ? placemarks.first.subLocality!
+                  : (placemarks.first.locality?.isNotEmpty == true)
+                      ? placemarks.first.locality!
+                      : (placemarks.first.administrativeArea?.isNotEmpty ==
+                              true)
+                          ? placemarks.first.administrativeArea!
+                          : (placemarks.first.country?.isNotEmpty == true)
+                              ? placemarks.first.country!
+                              : "Unknown Location";
         });
       }
     } catch (e) {
@@ -227,12 +261,11 @@ class _RideReportItemState extends State<RideReportItem> {
     }
   }
 
-String formatTimestamp(String timestamp) {
-  DateTime dateTime = DateTime.parse(timestamp).toUtc();
-  DateTime localTime = dateTime.toLocal(); // Convert to local time
-  return DateFormat('dd MMMM yyyy, hh:mm a').format(localTime);
-}
-
+  String formatTimestamp(String timestamp) {
+    DateTime dateTime = DateTime.parse(timestamp).toUtc();
+    DateTime localTime = dateTime.toLocal(); // Convert to local time
+    return DateFormat('dd MMMM yyyy, hh:mm a').format(localTime);
+  }
 
   double calculateAverageSpeed() {
     double totalSpeed =
@@ -299,10 +332,11 @@ String formatTimestamp(String timestamp) {
     );
   }
 
-Widget _buildMapTile(double tileWidth) {
+  Widget _buildMapTile(double tileWidth) {
     // Sort the ride data by timestamp
     List<Map<String, dynamic>> sortedRideData = List.from(widget.rideData)
-      ..sort((a, b) => DateTime.parse(a['timestamp']).compareTo(DateTime.parse(b['timestamp'])));
+      ..sort((a, b) => DateTime.parse(a['timestamp'])
+          .compareTo(DateTime.parse(b['timestamp'])));
 
     // Create route points from sorted data
     List<LatLng> routePoints = sortedRideData
@@ -323,7 +357,8 @@ Widget _buildMapTile(double tileWidth) {
             ),
             children: [
               TileLayer(
-                urlTemplate: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+                urlTemplate:
+                    'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
                 subdomains: ['a', 'b', 'c'],
               ),
               // Add PolylineLayer to connect points
@@ -343,14 +378,16 @@ Widget _buildMapTile(double tileWidth) {
                     point: routePoints.first,
                     width: 60,
                     height: 60,
-                    child: const Icon(Icons.location_on, color: Colors.green, size: 40),
+                    child: const Icon(Icons.location_on,
+                        color: Colors.green, size: 40),
                   ),
                   // Only end marker
                   Marker(
                     point: routePoints.last,
                     width: 60,
                     height: 60,
-                    child: const Icon(Icons.location_on, color: Colors.red, size: 40),
+                    child: const Icon(Icons.location_on,
+                        color: Colors.red, size: 40),
                   ),
                 ],
               ),
@@ -360,7 +397,6 @@ Widget _buildMapTile(double tileWidth) {
       ),
     );
   }
-
 
   Widget _buildAverageSpeedTile(double tileWidth) {
     double avgSpeed = calculateAverageSpeed();
@@ -387,19 +423,23 @@ Widget _buildMapTile(double tileWidth) {
       child: Container(
         width: tileWidth,
         child: Card(
-          color: Colors.red[50],
+          color: wrongSideSummary.isNotEmpty
+              ? Colors.red[50]
+              : Colors.yellow[50], // Change color based on condition
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
           child: ListTile(
-            leading: const Icon(Icons.warning, color: Colors.red, size: 30),
+            leading: Icon(
+              Icons.warning,
+              color: wrongSideSummary.isNotEmpty
+                  ? Colors.red
+                  : Colors.orange, // Different icon colors for better UI
+              size: 30,
+            ),
             title: const Text("Wrong Side Summary"),
-            subtitle: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: wrongSideSummary.isNotEmpty
-                  ? wrongSideSummary.map((summary) {
-                      return Text(
-                          "Wrong side at ${formatTimestamp(summary['timestamp'])}");
-                    }).toList()
-                  : [Text("No wrong side instances")],
+            subtitle: Text(
+              wrongSideSummary.isNotEmpty
+                  ? "Total wrong side instances: ${wrongSideSummary.length}\n"
+                  : "No wrong side instances",
             ),
           ),
         ),
@@ -408,25 +448,48 @@ Widget _buildMapTile(double tileWidth) {
   }
 
   Widget _buildHelmetStatusTile(double tileWidth) {
+    // Count occurrences of "with helmet" and "without helmet"
+    int withHelmetCount = widget.helmetData
+        .where((entry) => entry['status'] == 'with helmet')
+        .length;
+    int withoutHelmetCount = widget.helmetData
+        .where((entry) => entry['status'] == 'without helmet')
+        .length;
+
+    // Determine final ride status
+    String finalRideStatus = withHelmetCount > withoutHelmetCount
+        ? "Ride is With Helmet"
+        : "Ride is Without Helmet";
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Container(
         width: tileWidth,
         child: Card(
-          color: Colors.green[50],
+          color: finalRideStatus == "Ride is With Helmet"
+              ? Colors.green[50]
+              : Colors.red[50], // Green for helmet, Red otherwise
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
           child: ListTile(
-            leading: const Icon(Icons.security, color: Colors.green, size: 30),
-            title: const Text("Helmet Status"),
+            leading: Icon(
+              Icons.security,
+              color: finalRideStatus == "Ride is With Helmet"
+                  ? Colors.green
+                  : Colors.red,
+              size: 30,
+            ),
+            title: const Text("Helmet Summary"),
             subtitle: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text("Initial Status: $initialHelmetStatus"),
-                if (statusChanges.isNotEmpty)
-                  ...statusChanges.map((change) {
-                    return Text(
-                        "Status changed to: ${change['status']} at ${formatTimestamp(change['timestamp'])}");
-                  }).toList(),
+                Text(finalRideStatus,
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: finalRideStatus == "Ride is With Helmet"
+                            ? Colors.green
+                            : Colors.red)),
+                // Text("With Helmet: $withHelmetCount times"),
+                // Text("Without Helmet: $withoutHelmetCount times"),
               ],
             ),
           ),
@@ -435,5 +498,3 @@ Widget _buildMapTile(double tileWidth) {
     );
   }
 }
-
-
