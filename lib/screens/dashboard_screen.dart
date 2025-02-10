@@ -331,7 +331,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                               fontWeight: FontWeight.w600,
                             ),
                           )
-                          else
+                        else
                           Text(
                             'Speed Limit is 30 km/h',
                             style: TextStyle(
