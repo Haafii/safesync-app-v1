@@ -79,7 +79,7 @@ class _CameraScreenState extends State<CameraScreen> {
     return MaterialApp(
       theme: ThemeData(
         primarySwatch: Colors.teal, // Example color scheme - Customize this!
-        fontFamily: 'Roboto',       // Example font - Customize this!
+        fontFamily: 'Roboto', // Example font - Customize this!
         elevatedButtonTheme: ElevatedButtonThemeData(
           style: ElevatedButton.styleFrom(
             backgroundColor: Colors.grey,
@@ -92,7 +92,8 @@ class _CameraScreenState extends State<CameraScreen> {
         ),
         inputDecorationTheme: InputDecorationTheme(
           border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(8), // Rounded corners for text fields
+            borderRadius:
+                BorderRadius.circular(8), // Rounded corners for text fields
           ),
         ),
       ),
@@ -102,12 +103,14 @@ class _CameraScreenState extends State<CameraScreen> {
         ),
         body: Padding(
           padding: const EdgeInsets.all(20.0),
-          child: Form( // Wrapped in Form widget for validation
+          child: Form(
+            // Wrapped in Form widget for validation
             key: _formKey,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                TextFormField( // Using TextFormField for validation
+                TextFormField(
+                  // Using TextFormField for validation
                   controller: _ipController,
                   decoration: const InputDecoration(
                     labelText: 'Raspberry Pi IP Address',
@@ -126,14 +129,17 @@ class _CameraScreenState extends State<CameraScreen> {
                     Expanded(
                       child: DropdownButtonFormField<int>(
                         value: _selectedCameraId,
-                        decoration: const InputDecoration(labelText: 'Select Camera'),
-                        onChanged: _isStreaming ? null : (int? newValue) {
-                          if (newValue != null) {
-                            setState(() {
-                              _selectedCameraId = newValue;
-                            });
-                          }
-                        },
+                        decoration:
+                            const InputDecoration(labelText: 'Select Camera'),
+                        onChanged: _isStreaming
+                            ? null
+                            : (int? newValue) {
+                                if (newValue != null) {
+                                  setState(() {
+                                    _selectedCameraId = newValue;
+                                  });
+                                }
+                              },
                         items: const [
                           DropdownMenuItem(value: 0, child: Text('Camera 0')),
                           DropdownMenuItem(value: 1, child: Text('Camera 1')),
@@ -144,10 +150,13 @@ class _CameraScreenState extends State<CameraScreen> {
                     Expanded(
                       child: ElevatedButton(
                         onPressed: () async {
-                          if (_formKey.currentState!.validate()) { // Validate form
-                            final success = await _testConnection(_ipController.text);
+                          if (_formKey.currentState!.validate()) {
+                            // Validate form
+                            final success =
+                                await _testConnection(_ipController.text);
                             if (!success) {
-                              _showErrorDialog('Could not connect to Raspberry Pi');
+                              _showErrorDialog(
+                                  'Could not connect to Raspberry Pi');
                               return;
                             }
                             setState(() {
@@ -159,12 +168,14 @@ class _CameraScreenState extends State<CameraScreen> {
                                       'http://${_rpiAddress}:5000/video_feed/$_selectedCameraId'),
                                 );
                               } else {
-                                _webViewController.loadRequest(Uri.parse('about:blank'));
+                                _webViewController
+                                    .loadRequest(Uri.parse('about:blank'));
                               }
                             });
                           }
                         },
-                        child: Text(_isStreaming ? 'Stop Stream' : 'View Stream'),
+                        child:
+                            Text(_isStreaming ? 'Stop Stream' : 'View Stream'),
                       ),
                     ),
                   ],
