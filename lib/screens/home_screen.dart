@@ -4,6 +4,7 @@ import 'dashboard_screen.dart';
 import 'track_screen.dart';
 import 'camera_screen.dart';
 import 'report_screen.dart';
+import 'profile_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -20,6 +21,7 @@ class _HomeScreenState extends State<HomeScreen> {
     const TrackScreen(),
     const CameraScreen(),
     const RideReportsScreen(),
+    const UserProfileScreen(),
   ];
 
   @override
@@ -67,6 +69,10 @@ class _HomeScreenState extends State<HomeScreen> {
           BottomNavigationBarItem(
             icon: Icon(Icons.report),
             label: 'Report',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.person_2),
+            label: 'Profile',
           ),
         ],
       ),
