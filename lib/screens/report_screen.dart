@@ -110,7 +110,6 @@ class _RideReportsScreenState extends State<RideReportsScreen> {
             Color.fromRGBO(162, 154, 209, 1), // Custom background color
         foregroundColor: Colors.white, // Ensures icons are white
       ),
-
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
           : rides.isEmpty
@@ -417,29 +416,54 @@ class _RideReportItemState extends State<RideReportItem> {
     );
   }
 
+  // Widget _buildWrongSideSummaryTile(double tileWidth) {
+  //   return Padding(
+  //     padding: const EdgeInsets.symmetric(horizontal: 16),
+  //     child: Container(
+  //       width: tileWidth,
+  //       child: Card(
+  //         color: wrongSideSummary.isNotEmpty
+  //             ? Colors.red[50]
+  //             : Colors.yellow[50], // Change color based on condition
+  //         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+  //         child: ListTile(
+  //           leading: Icon(
+  //             Icons.warning,
+  //             color: wrongSideSummary.isNotEmpty
+  //                 ? Colors.red
+  //                 : Colors.orange, // Different icon colors for better UI
+  //             size: 30,
+  //           ),
+  //           title: const Text("Wrong Side Summary"),
+  //           subtitle: Text(
+  //             wrongSideSummary.isNotEmpty
+  //                 ? "Total wrong side instances: ${wrongSideSummary.length}\n"
+  //                 : "No wrong side instances",
+  //           ),
+  //         ),
+  //       ),
+  //     ),
+  //   );
+  // }
   Widget _buildWrongSideSummaryTile(double tileWidth) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Container(
         width: tileWidth,
         child: Card(
-          color: wrongSideSummary.isNotEmpty
-              ? Colors.red[50]
-              : Colors.yellow[50], // Change color based on condition
+          color: Colors.red[50],
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
           child: ListTile(
-            leading: Icon(
-              Icons.warning,
-              color: wrongSideSummary.isNotEmpty
-                  ? Colors.red
-                  : Colors.orange, // Different icon colors for better UI
-              size: 30,
-            ),
+            leading: const Icon(Icons.warning, color: Colors.red, size: 30),
             title: const Text("Wrong Side Summary"),
-            subtitle: Text(
-              wrongSideSummary.isNotEmpty
-                  ? "Total wrong side instances: ${wrongSideSummary.length}\n"
-                  : "No wrong side instances",
+            subtitle: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: wrongSideSummary.isNotEmpty
+                  ? wrongSideSummary.map((summary) {
+                      return Text(
+                          "Wrong side at ${formatTimestamp(summary['timestamp'])}");
+                    }).toList()
+                  : [Text("No wrong side instances")],
             ),
           ),
         ),
@@ -447,49 +471,80 @@ class _RideReportItemState extends State<RideReportItem> {
     );
   }
 
+//   Widget _buildHelmetStatusTile(double tileWidth) {
+//     // Count occurrences of "with helmet" and "without helmet"
+//     int withHelmetCount = widget.helmetData
+//         .where((entry) => entry['status'] == 'with helmet')
+//         .length;
+//     int withoutHelmetCount = widget.helmetData
+//         .where((entry) => entry['status'] == 'without helmet')
+//         .length;
+
+//     // Determine final ride status
+//     String finalRideStatus = withHelmetCount > withoutHelmetCount
+//         ? "Ride is With Helmet"
+//         : "Ride is Without Helmet";
+
+//     return Padding(
+//       padding: const EdgeInsets.symmetric(horizontal: 16),
+//       child: Container(
+//         width: tileWidth,
+//         child: Card(
+//           color: finalRideStatus == "Ride is With Helmet"
+//               ? Colors.green[50]
+//               : Colors.red[50], // Green for helmet, Red otherwise
+//           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+//           child: ListTile(
+//             leading: Icon(
+//               Icons.security,
+//               color: finalRideStatus == "Ride is With Helmet"
+//                   ? Colors.green
+//                   : Colors.red,
+//               size: 30,
+//             ),
+//             title: const Text("Helmet Summary"),
+//             subtitle: Column(
+//               crossAxisAlignment: CrossAxisAlignment.start,
+//               children: [
+//                 Text(finalRideStatus,
+//                     style: TextStyle(
+//                         fontWeight: FontWeight.bold,
+//                         color: finalRideStatus == "Ride is With Helmet"
+//                             ? Colors.green
+//                             : Colors.red)),
+//                 // Text("With Helmet: $withHelmetCount times"),
+//                 // Text("Without Helmet: $withoutHelmetCount times"),
+//               ],
+//             ),
+//           ),
+//         ),
+//       ),
+//     );
+//   }
+// }
+
+
+
   Widget _buildHelmetStatusTile(double tileWidth) {
-    // Count occurrences of "with helmet" and "without helmet"
-    int withHelmetCount = widget.helmetData
-        .where((entry) => entry['status'] == 'with helmet')
-        .length;
-    int withoutHelmetCount = widget.helmetData
-        .where((entry) => entry['status'] == 'without helmet')
-        .length;
-
-    // Determine final ride status
-    String finalRideStatus = withHelmetCount > withoutHelmetCount
-        ? "Ride is With Helmet"
-        : "Ride is Without Helmet";
-
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Container(
         width: tileWidth,
         child: Card(
-          color: finalRideStatus == "Ride is With Helmet"
-              ? Colors.green[50]
-              : Colors.red[50], // Green for helmet, Red otherwise
+          color: Colors.green[50],
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
           child: ListTile(
-            leading: Icon(
-              Icons.security,
-              color: finalRideStatus == "Ride is With Helmet"
-                  ? Colors.green
-                  : Colors.red,
-              size: 30,
-            ),
-            title: const Text("Helmet Summary"),
+            leading: const Icon(Icons.security, color: Colors.green, size: 30),
+            title: const Text("Helmet Status"),
             subtitle: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(finalRideStatus,
-                    style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        color: finalRideStatus == "Ride is With Helmet"
-                            ? Colors.green
-                            : Colors.red)),
-                // Text("With Helmet: $withHelmetCount times"),
-                // Text("Without Helmet: $withoutHelmetCount times"),
+                Text("Initial Status: $initialHelmetStatus"),
+                if (statusChanges.isNotEmpty)
+                  ...statusChanges.map((change) {
+                    return Text(
+                        "Status changed to: ${change['status']} at ${formatTimestamp(change['timestamp'])}");
+                  }).toList(),
               ],
             ),
           ),
