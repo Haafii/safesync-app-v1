@@ -1,119 +1,3 @@
-// import 'package:flutter/material.dart';
-// import 'login_screen.dart'; // Import your login screen
-
-// class UserProfileScreen extends StatelessWidget {
-//   const UserProfileScreen({super.key});
-
-//   void _confirmLogout(BuildContext context) {
-//     showDialog(
-//       context: context,
-//       builder: (BuildContext context) {
-//         return AlertDialog(
-//           title: Text("Logout"),
-//           content: Text("Are you sure you want to log out?"),
-//           actions: [
-//             TextButton(
-//               onPressed: () => Navigator.of(context).pop(), // Close dialog
-//               child: Text("No"),
-//             ),
-//             TextButton(
-//               onPressed: () {
-//                 Navigator.of(context).pop(); // Close dialog
-//                 // Navigate to the Login Screen by replacing the current route.
-//                 Navigator.of(context).pushReplacement(
-//                   MaterialPageRoute(builder: (context) => LoginScreen()),
-//                 );
-//               },
-//               child: Text("Yes", style: TextStyle(color: Colors.red)),
-//             ),
-//           ],
-//         );
-//       },
-//     );
-//   }
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(
-//         title: Text(
-//           "Profile",
-//           style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-//         ),
-//         centerTitle: true,
-//         backgroundColor: const Color.fromRGBO(162, 154, 209, 1),
-//         elevation: 4,
-//       ),
-//       body: Padding(
-//         padding: const EdgeInsets.all(16.0),
-//         child: Column(
-//           crossAxisAlignment: CrossAxisAlignment.center,
-//           children: [
-//             // Profile Image
-//             Center(
-//               child: CircleAvatar(
-//                 radius: 50,
-//                 backgroundImage: NetworkImage("https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"),
-//               ),
-//             ),
-//             SizedBox(height: 20),
-//             // User Information
-//             _buildInfoRow("Username", "safesync"),
-//             _buildInfoRow("Employee Number", "E001"),
-//             _buildInfoRow("Company Name", "Pravartak"),
-//             _buildInfoRow("Contact Number", "7902331126"),
-//             SizedBox(height: 30),
-//             // Logout Button
-//             SizedBox(
-//               width: double.infinity,
-//               child: ElevatedButton(
-//                 onPressed: () => _confirmLogout(context),
-//                 style: ElevatedButton.styleFrom(
-//                   backgroundColor: Colors.blueGrey,
-//                   padding: EdgeInsets.symmetric(vertical: 12),
-//                   shape: RoundedRectangleBorder(
-//                     borderRadius: BorderRadius.circular(10),
-//                   ),
-//                 ),
-//                 child: Text(
-//                   "Log Out",
-//                   style: TextStyle(fontSize: 18, color: Colors.white),
-//                 ),
-//               ),
-//             ),
-//           ],
-//         ),
-//       ),
-//     );
-//   }
-
-//   // Widget to display each row of user information
-//   Widget _buildInfoRow(String title, String value) {
-//     return Padding(
-//       padding: const EdgeInsets.symmetric(vertical: 8.0),
-//       child: Row(
-//         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//         children: [
-//           Text(
-//             title,
-//             style: TextStyle(
-//               fontSize: 16,
-//               fontWeight: FontWeight.bold,
-//               color: Colors.grey[700],
-//             ),
-//           ),
-//           Text(
-//             value,
-//             style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
-//           ),
-//         ],
-//       ),
-//     );
-//   }
-// }
-
-
-
 import 'package:flutter/material.dart';
 import 'login_screen.dart'; // Make sure you have your LoginScreen widget defined in this file.
 
@@ -137,7 +21,7 @@ class UserProfileScreen extends StatelessWidget {
                 Navigator.of(context).pop(); // Close dialog
                 // Navigate to the Login Screen by replacing the current route.
                 Navigator.of(context).pushReplacement(
-                  MaterialPageRoute(builder: (context) =>  LoginScreen()),
+                  MaterialPageRoute(builder: (context) => LoginScreen()),
                 );
               },
               child: const Text("Yes", style: TextStyle(color: Colors.red)),
@@ -167,11 +51,13 @@ class UserProfileScreen extends StatelessWidget {
                 ),
               ),
               child: Stack(
+                // Allow children to overflow the Stack's bounds.
+                clipBehavior: Clip.none,
                 children: [
                   // Back Button (Optional)
                   // Centered Profile Image (overlapping the header)
                   Positioned(
-                    bottom: -50,
+                    bottom: -50, // Negative offset to allow overlap
                     left: 0,
                     right: 0,
                     child: Center(
